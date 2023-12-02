@@ -56,12 +56,19 @@ p1 <- ggplot(reddit_karma, aes(x = year, y = score_norm, color=mistake_type)) +
                guide = guide_axis(n.dodge=2)) +
   scale_y_continuous(labels = scales::percent, limits = c(0.5, NA), breaks = scales::pretty_breaks(6)) +
   theme(plot.title = element_text(size=9),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.3, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.1, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=12),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(0.6, "cm"),
+        legend.key.width = unit(1.0, "cm"),
         legend.key = element_rect(color = NA, fill = NA),
         legend.key.size = unit(0.7, "cm")) +
   labs(x = "År",
@@ -86,12 +93,19 @@ p2 <- ggplot(reddit_karma, aes(x = year, y = mean_score, color=mistake_type)) +
                guide = guide_axis(n.dodge=2)) +
   scale_y_continuous(limits = c(0.5, NA), breaks = scales::pretty_breaks(6)) +
   theme(plot.title = element_text(size=10),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.3, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.1, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=12),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(0.6, "cm"),
+        legend.key.width = unit(1.0, "cm"),
         legend.key = element_rect(color = NA, fill = NA),
         legend.key.size = unit(0.7, "cm")) +
   labs(x = "År",
@@ -109,3 +123,4 @@ ggsave("plots/reddit/karma_relative_by_mistaketype.png",
 
 ggsave("plots/reddit/karma_points_by_mistaketype.png", 
        plot = p2, width=1900, height=1000, units="px", dpi=300, bg = "white")
+

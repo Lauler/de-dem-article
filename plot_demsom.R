@@ -30,19 +30,27 @@ p1 <- ggplot(data = df %>% filter(labels_text == "DE" & total > 500),
             aes(x = post_year, y = proportion)) +
   geom_line(aes(linetype=corpus, color = corpus), linewidth = 0.6) +
   geom_point(aes(fill=corpus, shape=corpus, color = corpus), colour="black", size=1.4, stroke=0.3) +
-  geom_ribbon(aes(ymin = conf_lower, ymax = conf_upper, fill = corpus), alpha = 0.2, show.legend=FALSE) +
-  theme_minimal(base_size=10) +
+  # geom_ribbon(aes(ymin = conf_lower, ymax = conf_upper, fill = corpus), alpha = 0.2, show.legend=FALSE) +
+  theme_minimal() +
   scale_shape_manual(values = 21:25) +
-  scale_x_date(breaks = scales::pretty_breaks(16),
+  scale_x_date(breaks = scales::pretty_breaks(12),
                guide = guide_axis(n.dodge=2)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.8), breaks = scales::pretty_breaks(6)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.8), breaks = scales::pretty_breaks(6),
+                     expand = expansion(mult = c(0, 0), add = c(0, 0.003))) +
   theme(plot.title = element_text(size=11),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.3, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.1, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=12),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(0.6, "cm")) +
+        legend.key.width = unit(1.0, "cm")) +
   guides(linetype = guide_legend(override.aes = list(size = 1.5))) +
   labs(x = "År",
        y = 'Andel "de som"',
@@ -66,21 +74,29 @@ p2 <- ggplot(data = df %>% filter(labels_text == "DE" & total > 500),
   geom_point(aes(fill=corpus, shape=corpus, size=total), colour="black", stroke=0.5) +
   theme_minimal(base_size=19) +
   scale_shape_manual(values = 21:25) +
-  scale_x_date(breaks = scales::pretty_breaks(16),
+  scale_x_date(breaks = scales::pretty_breaks(12),
                guide = guide_axis(n.dodge=2)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.8), breaks = scales::pretty_breaks(6)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.8), breaks = scales::pretty_breaks(6),
+                     expand = expansion(mult = c(0, 0), add = c(0, 0.003))) +
   scale_size_continuous(labels = function(x) format(x, big.mark = " ", decimal.mark = ".", scientific = FALSE),
                         limits = c(400, 6650),
                         breaks = c(500, 1000, 2000, 3000, 4000, 5000, 6500),
                         trans = "log",
   ) +
   theme(plot.title = element_text(size=11),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.5, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.2, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=24),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(1.2, "cm"),
+        legend.key.width = unit(1.0, "cm"),
         legend.key.height = unit(0.8, "cm")) +
   guides(linetype = guide_legend(override.aes = list(size = 2.5), order=1),
          shape = guide_legend(order=1),

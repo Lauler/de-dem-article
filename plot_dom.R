@@ -1,12 +1,12 @@
 library(ggplot2)
 library(dplyr)
 
-df <- list(Bloggmix = readr::read_tsv("data/de(m)_vs_dom/bloggmix.tsv"), 
+df <- list(Bloggmix = readr::read_tsv("data/de(m)_vs_dom/bloggmix_corrected.tsv"), 
            GP = readr::read_tsv("data/de(m)_vs_dom/gp.tsv"), 
            SVT = readr::read_tsv("data/de(m)_vs_dom/svt.tsv"))
 
 df <- bind_rows(df, .id = "corpus") %>%
-  select(-v1ipm, -v2ipm) %>%
+  # select(-v1ipm, -v2ipm) %>%
   mutate(post_year = lubridate::ymd(period, truncated=2L))
 
 df_familjeliv <- readr::read_tsv("data/de(m)_vs_dom/familjeliv_sentence_10000_firstage18_de(m)_vs_dom_t0.tsv")
@@ -39,19 +39,27 @@ df$conf_upper[df$conf_upper > 1] <- 1
 p1 <- ggplot(data = df %>% filter(total > 500), aes(x = post_year, y = v2rel)) +
   geom_line(aes(linetype=corpus, color = corpus), linewidth = 0.6) +
   geom_point(aes(fill=corpus, shape=corpus, color = corpus), colour="black", stroke=0.3) +
-  geom_ribbon(aes(ymin = conf_lower, ymax = conf_upper, fill = corpus), alpha = 0.25, show.legend=FALSE) +
+  # geom_ribbon(aes(ymin = conf_lower, ymax = conf_upper, fill = corpus), alpha = 0.25, show.legend=FALSE) +
   theme_minimal(base_size=10) +
   scale_shape_manual(values = 21:25) +
-  scale_x_date(breaks = scales::pretty_breaks(16),
+  scale_x_date(breaks = scales::pretty_breaks(12),
                guide = guide_axis(n.dodge=2)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.26), breaks = scales::pretty_breaks(6)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.26), breaks = scales::pretty_breaks(6),
+                     expand = expansion(mult = c(0, 0), add = c(0, 0.003))) +
   theme(plot.title = element_text(size=11),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.3, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.1, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=12),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(0.6, "cm")) +
+        legend.key.width = unit(1.0, "cm")) +
   guides(linetype = guide_legend(override.aes = list(size = 1.5))) +
   labs(x = "År",
        y = 'Andel dom',
@@ -71,21 +79,29 @@ p2 <- ggplot(data = df %>% filter(total > 500), aes(x = post_year, y = v2rel, co
   geom_point(aes(fill=corpus, shape=corpus, size=total), colour="black", stroke=0.5) +
   theme_minimal(base_size=19) +
   scale_shape_manual(values = 21:25) +
-  scale_x_date(breaks = scales::pretty_breaks(16),
+  scale_x_date(breaks = scales::pretty_breaks(12),
                guide = guide_axis(n.dodge=2)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.26), breaks = scales::pretty_breaks(6)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.26), breaks = scales::pretty_breaks(6),
+                     expand = expansion(mult = c(0, 0), add = c(0, 0.003))) +
   scale_size_continuous(labels = function(x) format(x, big.mark = " ", decimal.mark = ".", scientific = FALSE),
                         limits = c(1000, 500000),
                         breaks = c(1200, 3000, 5000, 10000, 50000, 100000, 500000),
                         trans = "log",
   ) +
   theme(plot.title = element_text(size=11),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.5, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.2, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=24),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(1.2, "cm"),
+        legend.key.width = unit(1.0, "cm"),
         legend.key.height = unit(0.8, "cm")) +
   guides(linetype = guide_legend(override.aes = list(size = 2.5), order=1),
          shape = guide_legend(order=1),
@@ -128,21 +144,29 @@ df_familjeliv_gen <- df_familjeliv %>%
   ungroup()
 
 p3 <- ggplot(data = df_familjeliv_gen %>% filter(total > 500), aes(x = post_year, y = v2rel)) +
+  # geom_ribbon(aes(ymin = conf_lower, ymax = conf_upper, fill = generation), alpha = 0.25, show.legend=FALSE) +
   geom_line(aes(linetype=generation, color = generation), linewidth = 0.6) +
   geom_point(aes(fill=generation, shape=generation, color = generation), colour="black", size=1.4, stroke=0.3) +
-  geom_ribbon(aes(ymin = conf_lower, ymax = conf_upper, fill = generation), alpha = 0.25, show.legend=FALSE) +
   theme_minimal(base_size=10) +
   scale_shape_manual(values = 21:24) +
-  scale_x_date(breaks = scales::pretty_breaks(16),
+  scale_x_date(breaks = scales::pretty_breaks(12),
                guide = guide_axis(n.dodge=2)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, NA), breaks = scales::pretty_breaks(6)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, NA), breaks = scales::pretty_breaks(6),
+                     expand = expansion(mult = c(0, 0), add = c(0, 0.003))) +
   theme(plot.title = element_text(size=11),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.3, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.1, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.05),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=12),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(0.6, "cm")) +
+        legend.key.width = unit(1.0, "cm")) +
   guides(linetype = guide_legend(override.aes = list(size = 1.5))) +
   labs(x = "År",
        y = 'Andel dom',
@@ -151,7 +175,7 @@ p3 <- ggplot(data = df_familjeliv_gen %>% filter(total > 500), aes(x = post_year
        shape = "Generation",
        linetype = "Generation",
        fill = "Generation")
-df_familjeliv_gen
+
 ggsave("plots/dom_vs_dedemdom/dom_vs_demdemdom_by_generation.png", 
        plot = p3, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
@@ -162,21 +186,29 @@ p4 <- ggplot(data = df_familjeliv_gen %>% filter(total > 500), aes(x = post_year
   # geom_point(aes(fill=generation, shape=generation), colour="black", size=1.4, stroke=0.3) +
   theme_minimal(base_size=19) +
   scale_shape_manual(values = 21:24) +
-  scale_x_date(breaks = scales::pretty_breaks(16),
+  scale_x_date(breaks = scales::pretty_breaks(12),
                guide = guide_axis(n.dodge=2)) +
-  scale_y_continuous(labels = scales::percent, limits = c(0, NA), breaks = scales::pretty_breaks(6)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, NA), breaks = scales::pretty_breaks(6),
+                     expand = expansion(mult = c(0, 0), add = c(0, 0.005))) +
   scale_size_continuous(labels = function(x) format(x, big.mark = " ", decimal.mark = ".", scientific = FALSE),
                         limits = c(400, 250000),
                         breaks = c(500, 1000, 5000, 10000, 50000, 100000, 250000),
                         trans = "log",
   ) +
   theme(plot.title = element_text(size=11),
-        panel.grid.major.y = element_line(colour="grey62", linewidth=0.5, linetype=2),
-        panel.grid.major.x = element_line(colour="grey62", linewidth=0.2, linetype=1),
+        plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+        plot.background = element_rect(colour="black", linewidth = 0.06),
+        axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+        axis.ticks = element_line(linewidth = 0.1),
+        axis.text.x = element_text(vjust=0.1, color = "black"),
+        axis.text.y = element_text(color = "black"),
+        panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        text=element_text(family="Palatino"),
+        text=element_text(family="Times New Roman", size=24),
         plot.subtitle=element_text(size=5.5),
-        legend.key.width = unit(1.2, "cm"),
+        legend.key.width = unit(1.0, "cm"),
         legend.key.height = unit(0.8, "cm")) +
   guides(linetype = guide_legend(override.aes = list(size = 2.5), order=1),
          shape = guide_legend(order=1),
@@ -194,3 +226,4 @@ p4 <- ggplot(data = df_familjeliv_gen %>% filter(total > 500), aes(x = post_year
 
 ggsave("plots/dom_vs_dedemdom/dom_vs_demdemdom_by_generation_pointsize.png", 
        plot = p4, width=1900, height=1000, units="px", dpi=150, bg = "white")
+

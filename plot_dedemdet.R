@@ -2,12 +2,18 @@ library(readr)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+# library(showtext)
 
 df <- arrow::read_parquet("data/results/all_results_preprocessed.parquet")
 
 df <- df %>%
   mutate(maincorpus = recode(maincorpus, gp = "GP", svt = "SVT", familjeliv = "Familjeliv", reddit = "Reddit", bloggmix = "Bloggmix"))
 
+# font_add("Times New Roman", regular = "/home/faton/projects/text/sprakbanken_dedem/fonts/Times_New_Roman.ttf", 
+#          bold = "/home/faton/projects/text/sprakbanken_dedem/fonts/Times_New_Roman_Bold.ttf",
+#          italic = "/home/faton/projects/text/sprakbanken_dedem/fonts/Times_New_Roman_Italic.ttf",
+#          bolditalic = "/home/faton/projects/text/sprakbanken_dedem/fonts/Times_New_Roman_Bold_Italic.ttf")
+# showtext_auto()
 
 preprocess_maincorpus_data <- function(df, mistake = NULL, score_threshold = 0, group_var = maincorpus, alpha=0.05, author_level=FALSE){
   group_var <- enquo(group_var)
@@ -111,18 +117,26 @@ plot_trend_maincorpus <- function(df_gen, title, group_var=maincorpus, legend_ti
       geom_line(aes(linetype=!!group_var, colour=!!group_var), linewidth = 0.6) +
       # geom_point(aes(shape=maincorpus), size=2.1, color="black") +
       geom_point(aes(fill=!!group_var, shape=!!group_var, colour=!!group_var), colour="black", size=1.4, stroke=0.3) +
-      theme_minimal(base_size=10) +
+      theme_minimal() +
       scale_shape_manual(values = 21:25) +
-      scale_x_date(breaks = scales::pretty_breaks(16),
+      scale_x_date(breaks = scales::pretty_breaks(12),
                    guide = guide_axis(n.dodge=2)) +
-      scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, y_max_limit), breaks = scales::pretty_breaks(6)) +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, y_max_limit), breaks = scales::pretty_breaks(6),
+                         expand = expansion(mult = c(0, 0), add = c(0, 0.003))) +
       theme(plot.title = element_text(size=11),
-            panel.grid.major.y = element_line(colour="grey62", linewidth=0.3, linetype=2),
-            panel.grid.major.x = element_line(colour="grey62", linewidth=0.1, linetype=1),
+            plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+            plot.background = element_rect(colour="black", linewidth = 0.05),
+            axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+            axis.ticks = element_line(linewidth = 0.1),
+            axis.text.x = element_text(vjust=0.1, color = "black"),
+            axis.text.y = element_text(color = "black"),
+            panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+            panel.grid.minor.y = element_blank(),
+            panel.grid.major.x = element_blank(),
             panel.grid.minor.x = element_blank(),
-            text=element_text(family="Palatino"),
+            text=element_text(family="Times New Roman", size=12),
             plot.subtitle=element_text(size=5.5),
-            legend.key.width = unit(0.6, "cm")) +
+            legend.key.width = unit(1.0, "cm")) +
       guides(linetype = guide_legend(override.aes = list(size = 1.5))) +
       labs(x = "År",
            y = "Förväxlingar",
@@ -137,18 +151,26 @@ plot_trend_maincorpus <- function(df_gen, title, group_var=maincorpus, legend_ti
       geom_line(aes(linetype=!!group_var, colour=!!group_var), linewidth = 1) +
       # geom_point(aes(shape=maincorpus), size=2.1, color="black") +
       geom_point(aes(fill=!!group_var, shape=!!group_var, size=n_obs, colour=!!group_var), colour="black", stroke=0.5) +
-      theme_minimal(base_size=19) +
+      theme_minimal() +
       scale_shape_manual(values = 21:25) +
-      scale_x_date(breaks = scales::pretty_breaks(16),
+      scale_x_date(breaks = scales::pretty_breaks(12),
                    guide = guide_axis(n.dodge=2)) +
-      scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, y_max_limit), breaks = scales::pretty_breaks(6)) +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, y_max_limit), breaks = scales::pretty_breaks(6),
+                         expand = expansion(mult = c(0, 0), add = c(0, 0.005))) +
       theme(plot.title = element_text(size=11),
-            panel.grid.major.y = element_line(colour="grey62", linewidth=0.5, linetype=2),
-            panel.grid.major.x = element_line(colour="grey62", linewidth=0.2, linetype=1),
+            plot.margin = margin(t=0.3, r=0.15, b=0.1, l=0.15, unit = "cm"),
+            plot.background = element_rect(colour="black", linewidth = 0.05),
+            axis.line = element_line(colour = "black", linewidth = 0.3, linetype = 1),
+            axis.ticks = element_line(linewidth = 0.1),
+            axis.text.x = element_text(vjust=0.1, color = "black"),
+            axis.text.y = element_text(color = "black"),
+            panel.grid.major.y = element_line(colour = "black", linewidth = 0.1, linetype = 1),
+            panel.grid.minor.y = element_blank(),
+            panel.grid.major.x = element_blank(),
             panel.grid.minor.x = element_blank(),
-            text=element_text(family="Palatino"),
+            text=element_text(family="Times New Roman", size=24),
             plot.subtitle=element_text(size=5.5),
-            legend.key.width = unit(1.4, "cm"),
+            legend.key.width = unit(1.0, "cm"),
             legend.key.height = unit(0.8, "cm")) +
       guides(linetype = guide_legend(override.aes = list(size = 2.5), order=1),
              shape = guide_legend(order=1),
@@ -179,7 +201,8 @@ df_gen <- df_gen %>%
   mutate(single_author_ratio = max_de_mistake/total_de_mistake,
          single_author_over_50 = ifelse(single_author_ratio > 0.3 & !is.na(max_author_comments), yes = mean_ratio, no = NA)) %>%
   filter(n_obs > 500)
-p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt', confidence_interval=TRUE)
+
+p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt', confidence_interval=FALSE)
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_satsdel_funktion/corpus/de_objektsposition_maincorpus.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
@@ -200,7 +223,7 @@ df_gen <- df_gen %>%
   mutate(single_author_ratio = max_dem_mistake/total_dem_mistake,
          single_author_over_50 = ifelse(single_author_ratio > 0.3 & !is.na(max_author_comments), yes = mean_ratio, no = NA)) %>%
   filter(n_obs > 500)
-p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare', confidence_interval = TRUE)
+p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare', confidence_interval = FALSE)
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_satsdel_funktion/corpus/dem_subjektdeterminerare_maincorpus.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
@@ -247,13 +270,13 @@ df_gen <- preprocess_maincorpus_data(df = df_familjeliv, mistake = "de_mistake",
 df_gen <- df_gen %>%
   filter(n_obs > 500 & n_authors > 20) 
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt över generationer', group_var = generation, 
-                           legend_title = "Generation", y_max_limit = 0.13, confidence_interval = TRUE)
+                           legend_title = "Generation", y_max_limit = 0.108, confidence_interval = FALSE)
 ggsave("plots/analys_satsdel_funktion/generation/de_objektsposition_familjeliv_generation.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
 # Another version with pointsize scaled
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt över generationer', 
-                           group_var = generation, legend_title = "Generation", y_max_limit = 0.115, scale_pointsize = TRUE)
+                           group_var = generation, legend_title = "Generation", y_max_limit = 0.108, scale_pointsize = TRUE)
 p <- p + scale_size_continuous(labels = function(x) format(x, big.mark = " ", decimal.mark = ".", scientific = FALSE),
                                limits = c(420, 20000),
                                breaks = c(500, 1000, 2000, 3000, 5000, 10000, 19600),
@@ -267,7 +290,7 @@ df_gen <- preprocess_maincorpus_data(df = df_familjeliv, mistake = "dem_mistake"
 df_gen <- df_gen %>%
   filter(n_obs > 500 & n_authors > 20)
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare över generationer', group_var = generation, 
-                           legend_title = "Generation", y_max_limit = 0.35, confidence_interval = TRUE)
+                           legend_title = "Generation", y_max_limit = 0.32, confidence_interval = FALSE)
 ggsave("plots/analys_satsdel_funktion/generation/dem_subjektdeterminerare_familjeliv_generation.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
@@ -308,8 +331,8 @@ df_gen <- preprocess_maincorpus_data(df = df_familjeliv %>% filter(author_commen
 df_gen <- df_gen %>%
   mutate(single_author_ratio = max_de_mistake/total_de_mistake,
          single_author_over_50 = ifelse(single_author_ratio > 0.3, yes = mean_ratio, no = NA)) %>%
-  filter(n_authors >= 20)
-p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt över generationer', group_var = generation, legend_title = "Generation", y_max_limit = 0.295)
+  filter(n_obs > 500 & n_authors > 20)
+p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt över generationer', group_var = generation, legend_title = "Generation", y_max_limit = 0.24)
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_satsdel_funktion/generation/author/de_objektsposition_familjeliv_generation_author.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
@@ -320,8 +343,8 @@ df_gen <- preprocess_maincorpus_data(df = df_familjeliv %>% filter(author_commen
 df_gen <- df_gen %>%
   mutate(single_author_ratio = max_dem_mistake/total_dem_mistake,
          single_author_over_50 = ifelse(single_author_ratio > 0.3, yes = mean_ratio, no = NA)) %>%
-  filter(n_authors >= 20)
-p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare över generationer', group_var = generation, legend_title = "Generation", y_max_limit = 0.153)
+  filter(n_obs > 500 & n_authors > 20)
+p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare över generationer', group_var = generation, legend_title = "Generation", y_max_limit = 0.146)
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_satsdel_funktion/generation/author/dem_subjektdeterminerare_familjeliv_generation_author.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
@@ -332,7 +355,7 @@ df_gen <- preprocess_maincorpus_data(df = df_familjeliv %>% filter(author_commen
 df_gen <- df_gen %>%
   mutate(single_author_ratio = max_det_mistake/total_det_mistake,
          single_author_over_50 = ifelse(single_author_ratio > 0.3, yes = mean_ratio, no = NA)) %>%
-  filter(n_authors >= 20)
+  filter(n_obs > 500 & n_authors > 20)
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel "de" som borde vara "det" (singular) över generationer', group_var = generation, legend_title = "Generation")
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_form/generation/author/det_by_familjeliv_generation_author.png", 
