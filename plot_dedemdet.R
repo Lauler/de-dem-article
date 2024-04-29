@@ -207,6 +207,11 @@ p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" s
 ggsave("plots/analys_satsdel_funktion/corpus/de_objektsposition_maincorpus.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
+df_gen %>% 
+  mutate(post_year = lubridate::year(post_year)) %>%
+  select(maincorpus, post_year, mean_ratio, n_obs, n_authors, total_de_mistake) %>% 
+  readr::write_csv("plots/analys_satsdel_funktion/corpus/de_objektsposition_maincorpus.csv")
+
 # Another version with pointsize scaled
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt', scale_pointsize = TRUE)
 p <- p + scale_size_continuous(labels = function(x) format(x, big.mark = " ", decimal.mark = ".", scientific = FALSE),
@@ -227,6 +232,11 @@ p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" 
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_satsdel_funktion/corpus/dem_subjektdeterminerare_maincorpus.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
+
+df_gen %>% 
+  mutate(post_year = lubridate::year(post_year)) %>%
+  select(maincorpus, post_year, mean_ratio, n_obs, n_authors, total_dem_mistake) %>% 
+  readr::write_csv("plots/analys_satsdel_funktion/corpus/dem_subjektdeterminerare_maincorpus.csv")
 
 
 # Another version with pointsize scaled
@@ -249,6 +259,12 @@ p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel "de" som borde vara "de
 # p <- p + geom_point(aes(y = df_gen$single_author_over_50), shape=4, colour="black", size=2, alpha=0.85)
 ggsave("plots/analys_form/corpus/det_by_maincorpus.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
+
+df_gen %>% 
+  mutate(post_year = lubridate::year(post_year)) %>%
+  select(maincorpus, post_year, mean_ratio, n_obs, n_authors, total_det_mistake) %>% 
+  readr::write_csv("plots/analys_form/corpus/det_by_maincorpus.csv")
+
 
 # Another version with pointsize scaled
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare', scale_pointsize = TRUE)
@@ -274,6 +290,12 @@ p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" s
 ggsave("plots/analys_satsdel_funktion/generation/de_objektsposition_familjeliv_generation.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
+df_gen %>% 
+  mutate(post_year = lubridate::year(post_year)) %>%
+  select(generation, post_year, mean_ratio, n_obs, n_authors, total_de_mistake) %>% 
+  readr::write_csv("plots/analys_satsdel_funktion/generation/de_objektsposition_familjeliv_generation.csv")
+
+
 # Another version with pointsize scaled
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "de" som objekt över generationer', 
                            group_var = generation, legend_title = "Generation", y_max_limit = 0.108, scale_pointsize = TRUE)
@@ -294,6 +316,11 @@ p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" 
 ggsave("plots/analys_satsdel_funktion/generation/dem_subjektdeterminerare_familjeliv_generation.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
+df_gen %>% 
+  mutate(post_year = lubridate::year(post_year)) %>%
+  select(generation, post_year, mean_ratio, n_obs, n_authors, total_dem_mistake) %>% 
+  readr::write_csv("plots/analys_satsdel_funktion/generation/dem_subjektdeterminerare_familjeliv_generation.csv")
+
 # Another version with pointsize scaled
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel användningar av "dem" som subjekt och determinerare över generationer', 
                            group_var = generation, legend_title = "Generation", y_max_limit = 0.31, scale_pointsize = TRUE)
@@ -312,6 +339,11 @@ p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel "de" som borde vara "de
                            group_var = generation, legend_title = "Generation")
 ggsave("plots/analys_form/generation/det_by_familjeliv_generation.png", 
        plot = p, width=1900, height=1000, units="px", dpi=300, bg = "white")
+
+df_gen %>% 
+  mutate(post_year = lubridate::year(post_year)) %>%
+  select(generation, post_year, mean_ratio, n_obs, n_authors, total_det_mistake) %>% 
+  readr::write_csv("plots/analys_form/generation/det_by_familjeliv_generation.csv")
 
 # Another version with pointsize scaled
 p <- plot_trend_maincorpus(df_gen = df_gen, title='Andel "de" som borde vara "det" (singular) över generationer', 

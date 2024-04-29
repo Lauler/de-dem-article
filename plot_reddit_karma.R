@@ -37,7 +37,8 @@ reddit_karma <- reddit %>%
                names_to = "mistake_type",
                values_to = "ratio") %>%
   group_by(year, mistake_type) %>%
-  summarize(mean_score = mean(ratio, na.rm=TRUE))
+  summarize(mean_score = mean(ratio, na.rm=TRUE),
+            total = n())
 
 reddit_karma <- reddit_karma %>%
   group_by(year) %>%
@@ -78,7 +79,6 @@ p1 <- ggplot(reddit_karma, aes(x = year, y = score_norm, color=mistake_type)) +
        shape = "Typ av användning",
        linetype = "Typ av användning",
        fill = "Typ av användning")
-
 
 
 p2 <- ggplot(reddit_karma, aes(x = year, y = mean_score, color=mistake_type)) +
@@ -123,4 +123,12 @@ ggsave("plots/reddit/karma_relative_by_mistaketype.png",
 
 ggsave("plots/reddit/karma_points_by_mistaketype.png", 
        plot = p2, width=1900, height=1000, units="px", dpi=300, bg = "white")
+
+
+
+reddit_karma %>% 
+  mutate(post_year = lubridate::year(year),
+         mistake_type = ifelse(mistake_type == "all_mistake", yes = "no_mistake", no = mistake_type)) %>%
+  select(post_year, mistake_type, mean_score, total) %>% 
+  readr::write_csv("plots/reddit/karma_relative_by_mistaketype.csv")
 

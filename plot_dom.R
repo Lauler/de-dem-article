@@ -73,6 +73,13 @@ p1 <- ggplot(data = df %>% filter(total > 500), aes(x = post_year, y = v2rel)) +
 ggsave("plots/dom_vs_dedemdom/dom_vs_demdemdom_by_corpus.png", 
        plot = p1, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
+df %>% 
+  filter(total > 500) %>%
+  mutate(post_year = lubridate::year(post_year)) %>%
+  rename(dom_ratio = v2rel, total_dom = v2abs) %>%
+  select(corpus, post_year, total, total_dom, dom_ratio) %>% 
+  readr::write_csv("plots/dom_vs_dedemdom/dom_vs_demdemdom_by_corpus.csv")
+
 
 p2 <- ggplot(data = df %>% filter(total > 500), aes(x = post_year, y = v2rel, color = corpus)) +
   geom_line(aes(linetype=corpus), linewidth = 0.8) +
@@ -178,6 +185,13 @@ p3 <- ggplot(data = df_familjeliv_gen %>% filter(total > 500), aes(x = post_year
 
 ggsave("plots/dom_vs_dedemdom/dom_vs_demdemdom_by_generation.png", 
        plot = p3, width=1900, height=1000, units="px", dpi=300, bg = "white")
+
+df_familjeliv_gen %>% 
+  filter(total > 500) %>%
+  mutate(post_year = lubridate::year(post_year)) %>%
+  rename(dom_ratio = v2rel, total_dom = v2abs) %>%
+  select(corpus, generation, post_year, total, total_dom, dom_ratio) %>% 
+  readr::write_csv("plots/dom_vs_dedemdom/dom_vs_demdemdom_by_generation.csv")
 
 
 p4 <- ggplot(data = df_familjeliv_gen %>% filter(total > 500), aes(x = post_year, y = v2rel, color = generation)) +

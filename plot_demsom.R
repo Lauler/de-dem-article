@@ -60,11 +60,15 @@ p1 <- ggplot(data = df %>% filter(labels_text == "DE" & total > 500),
        linetype = "Korpus",
        fill = "Korpus")
 
-p1
-
 ggsave("plots/desom_vs_demsom/desom_vs_demsom_by_corpus.png", 
        plot = p1, width=1900, height=1000, units="px", dpi=300, bg = "white")
 
+df %>%
+  filter(labels_text == "DE" & total > 500) %>%
+  rename(total_desom = n) %>%
+  ungroup() %>%
+  select(corpus, year, total, total_desom, proportion) %>%
+  readr::write_csv("plots/desom_vs_demsom/desom_vs_demsom_by_corpus.csv")
 
 
 
